@@ -1,14 +1,17 @@
 {
-  "name": "tasks-api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+	"name": "tasks-api",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
 	"type": "module",
 	"scripts": {
 		"dev": "node --watch src/server.js"
 	},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.11.1"
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.11.1",
+	"dependencies": {
+		"csv-parse": "^5.6.0"
+	}
 }

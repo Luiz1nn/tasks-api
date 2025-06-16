@@ -1,11 +1,18 @@
 import http from 'node:http'
+import { csvParse } from './middlewares/csv-parse.js'
 import { json } from './middlewares/json.js'
 import { routes } from './routes.js'
 
 const server = http.createServer(async (req, res) => {
-  const { method, url } = req
+  const contentType = req.headers['content-type']
+  if (contentType?.includes('text/csv')) {
+    await csvParse(req)
+  }
+  else {
+    await json(req, res)
+  }
 
-  await json(req, res)
+  const { method, url } = req
 
   const route = routes.find(route => {
     return route.method === method && route.path.test(url)

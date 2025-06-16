@@ -1,7 +1,6 @@
 import { randomUUID } from 'node:crypto'
-import { Database } from './database.js'
-import { validateTask } from './middlewares/validate-task.js'
 import { buildRoutePath } from './utils/build-route-path.js'
+import { Database } from './database.js'
 
 const database = new Database()
 
@@ -11,34 +10,37 @@ export const routes = [
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
       const users = database.select('tasks')
-
-      return res.end(JSON.stringify(users))
+      return res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(users))
     }
   },
   {
     method: 'POST',
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
-      const error = validateTask(req)
 
-      if (error) {
+
+      console.log(req.body)
+      const tasks = Array.isArray(req.body) ? req.body : [req.body]
+
+      const invalid = tasks.find(task => !task.title || !task.description)
+      if (invalid) {
         return res
           .writeHead(400)
-          .end(JSON.stringify({ error }))
+          .end(JSON.stringify({ error: "Cada tarefa precisa de 'title' e 'description'" }))
       }
 
-      const { title, description } = req.body
+      for (const { title, description } of tasks) {
+        const task = {
+          id: randomUUID(),
+          title,
+          description,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          completed_at: null,
+        }
 
-      const task = {
-        id: randomUUID(),
-        title,
-        description,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        completed_at: null,
+        database.insert('tasks', task)
       }
-
-      database.insert('tasks', task)
 
       return res.writeHead(201).end()
     }
@@ -66,7 +68,7 @@ export const routes = [
   },
   {
     method: 'PATCH',
-    path: buildRoutePath('/tasks/:id'),
+    path: buildRoutePath('/tasks/:id/complete'),
     handler: (req, res) => {
       const { id } = req.params
 
