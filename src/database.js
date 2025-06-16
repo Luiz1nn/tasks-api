@@ -35,4 +35,25 @@ export class Database {
     return data
   }
 
+  update(table, id, data) {
+    const rowIndex = this.#database[table].findIndex(row => row.id === id)
+
+    if (rowIndex === -1) {
+      return false
+    }
+
+    const currentData = this.#database[table][rowIndex]
+
+    if (!data.title) data.title = currentData.title
+    if (!data.description) data.title = currentData.description
+
+    this.#database[table][rowIndex] = {
+      ...currentData,
+      ...data,
+      updated_at: new Date().toISOString(),
+    }
+
+    this.#persist()
+    return true
+  }
 }
