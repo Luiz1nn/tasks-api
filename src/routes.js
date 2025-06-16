@@ -65,6 +65,23 @@ export const routes = [
     }
   },
   {
+    method: 'PATCH',
+    path: buildRoutePath('/tasks/:id'),
+    handler: (req, res) => {
+      const { id } = req.params
+
+      const updated = database.patch('tasks', id)
+
+      if (!updated) {
+        return res
+          .writeHead(404)
+          .end(JSON.stringify({ error: 'Tarefa não encontrada.' }))
+      }
+
+      return res.writeHead(204).end()
+    }
+  },
+  {
     method: 'DELETE',
     path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {

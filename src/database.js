@@ -57,6 +57,24 @@ export class Database {
     return true
   }
 
+  patch(table, id) {
+    const rowIndex = this.#database[table].findIndex(row => row.id === id)
+
+    if (rowIndex === -1) {
+      return false
+    }
+
+    const currentData = this.#database[table][rowIndex]
+
+    this.#database[table][rowIndex] = {
+      ...currentData,
+      completed_at: new Date().toISOString(),
+    }
+
+    this.#persist()
+    return true
+  }
+
   delete(table, id) {
     const rowIndex = this.#database[table].findIndex(row => row.id === id)
 
