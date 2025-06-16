@@ -23,8 +23,6 @@ export async function csvParse(req) {
         .end(JSON.stringify({ error: "CSV deve conter as colunas 'title' e 'description' preenchidas." }))
     }
 
-
-    console.log(record)
     records.push({
       title: record.title,
       description: record.description
