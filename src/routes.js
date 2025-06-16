@@ -17,9 +17,6 @@ export const routes = [
     method: 'POST',
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
-
-
-      console.log(req.body)
       const tasks = Array.isArray(req.body) ? req.body : [req.body]
 
       const invalid = tasks.find(task => !task.title || !task.description)
