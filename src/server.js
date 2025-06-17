@@ -1,6 +1,7 @@
 import http from 'node:http'
 import { csvParse } from './middlewares/csv-parse.js'
 import { json } from './middlewares/json.js'
+import { extractQueryParams } from './utils/extract-query-params.js'
 import { routes } from './routes.js'
 
 const server = http.createServer(async (req, res) => {
@@ -24,6 +25,8 @@ const server = http.createServer(async (req, res) => {
     const { query, ...params } = routeParams.groups
 
     req.params = params
+    req.query = query ? extractQueryParams(query) : {}
+
     return route.handler(req, res)
   }
 
